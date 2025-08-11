@@ -62,5 +62,7 @@ func (s *EmailService) sendEmail(ctx context.Context, email types.EmailData) {
 	if err != nil {
 		logger.GetLoggerFromCtx(ctx).Error(ctx, "error while sending an email",
 			zap.Error(err), zap.Any("email", email))
+	} else {
+		logger.GetLoggerFromCtx(ctx).Info(ctx, "sent an email", zap.Any("email", email))
 	}
 }
