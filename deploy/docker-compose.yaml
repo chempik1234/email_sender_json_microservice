@@ -1,0 +1,25 @@
+services:
+  service:
+    build:
+      context: .
+      dockerfile: ../build/Dockerfile.emailer
+    env_file:
+      - ../config/.env
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./build/nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      backend_1:
+        condition: service_started
+      backend_2:
+        condition: service_started
+      backend_3:
+        condition: service_started
+
+volumes:
+  postgres_data:
+  redis_data:

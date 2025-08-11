@@ -7,6 +7,7 @@ import (
 	"email_microservice/internal/ports/adapters/email_sender"
 	"email_microservice/internal/services"
 	"email_microservice/pkg/logger"
+	"email_microservice/pkg/rabbitmq"
 	"go.uber.org/zap"
 	"log"
 	"os"
@@ -19,13 +20,19 @@ func main() {
 	defer stop()
 	ctx, _ = logger.New(ctx)
 
-	_, err := config.New()
+	cfg, err := config.New()
 	if err != nil {
 		logger.GetLoggerFromCtx(ctx).Fatal(ctx, "failed to load config from env vars", zap.Error(err))
 	}
 
-	var receiverRepo *email_data_receiver.EmailDataReceiverRepositoryConsoleInput
-	receiverRepo, err = email_data_receiver.NewEmailDataReceiverRepositoryConsoleInput()
+	var rabbitmqManager *rabbitmq.QueueManager
+	rabbitmqManager, err = rabbitmq.NewQueueManager(cfg.RabbitMQConfig)
+	if err != nil {
+		logger.GetLoggerFromCtx(ctx).Fatal(ctx, "failed to connect to rabbitmq", zap.Error(err))
+	}
+
+	var receiverRepo *email_data_receiver.EmailDataReceiverRepositoryRabbitMQ
+	receiverRepo, err = email_data_receiver.NewEmailDataReceiverRepositoryRabbitMQ(rabbitmqManager)
 	if err != nil {
 		logger.GetLoggerFromCtx(ctx).Fatal(ctx, "failed to initialize email_data_receiver repository", zap.Error(err))
 	}
