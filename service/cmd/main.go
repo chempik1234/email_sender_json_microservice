@@ -37,8 +37,8 @@ func main() {
 		logger.GetLoggerFromCtx(ctx).Fatal(ctx, "failed to initialize email_data_receiver repository", zap.Error(err))
 	}
 
-	var senderRepo *email_sender.EmailSenderRepositoryConsoleOutput
-	senderRepo, err = email_sender.NewEmailSenderRepositoryConsoleOutput()
+	var senderRepo *email_sender.EmailSenderRepositoryNetSMTP
+	senderRepo, err = email_sender.NewEmailSenderRepositoryNetSMTP(cfg.EmailConfig)
 	if err != nil {
 		logger.GetLoggerFromCtx(ctx).Fatal(ctx, "failed to initialize email_sender repository", zap.Error(err))
 	}

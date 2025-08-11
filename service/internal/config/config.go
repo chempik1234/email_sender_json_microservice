@@ -5,7 +5,12 @@ import (
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
-type EmailServiceConfig struct {
+type EmailConfig struct {
+	From     string `yaml:"from" env:"FROM"`
+	To       string `yaml:"to" env:"TO"`
+	Host     string `yaml:"host" env:"HOST"`
+	Password string `yaml:"password" env:"PASSWORD"`
+	Port     int    `yaml:"port" env:"PORT"`
 }
 
 type RabbitMQConfig struct {
@@ -20,8 +25,8 @@ type RabbitMQConfig struct {
 }
 
 type Config struct {
-	EmailServiceConfig EmailServiceConfig `yaml:"email_service" env-prefix:"EMAIL_SERVICE_"`
-	RabbitMQConfig     RabbitMQConfig     `yaml:"rabbitmq" env-prefix:"RABBITMQ_"`
+	EmailConfig    EmailConfig    `yaml:"email" env-prefix:"EMAIL_"`
+	RabbitMQConfig RabbitMQConfig `yaml:"rabbitmq" env-prefix:"RABBITMQ_"`
 }
 
 func New() (Config, error) {
